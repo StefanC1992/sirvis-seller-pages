@@ -1,0 +1,774 @@
+<!doctype html>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SIRVIS × BirraIngross — Seller Page</title>
+    <meta name="description" content="Seller page for BirraIngross on SIRVIS: info, news, cocktail guides, promotions and interactions." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* ── Reset & tokens ── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg: #0b0f14;
+        --surface: #141920;
+        --surface2: #1c2330;
+        --border: rgba(255,255,255,.08);
+        --text: #e8edf4;
+        --muted: #8a96a8;
+        --accent: #f5a623;
+        --accent2: #e67e22;
+        --green: #27ae60;
+        --radius: 14px;
+        --radius-sm: 8px;
+        --font: 'Space Grotesk', system-ui, sans-serif;
+      }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; }
+      img { max-width: 100%; display: block; }
+      a { color: var(--accent); text-decoration: none; }
+      ul { padding-left: 1.2em; }
+      li { margin-bottom: 4px; }
+      select, input, textarea {
+        background: var(--surface2); color: var(--text); border: 1px solid var(--border);
+        border-radius: var(--radius-sm); padding: 8px 12px; font: inherit; width: 100%;
+        outline: none;
+      }
+      select:focus, input:focus, textarea:focus { border-color: var(--accent); }
+      textarea { min-height: 90px; resize: vertical; }
+
+      /* ── Layout helpers ── */
+      .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+      .section { padding: 60px 0; }
+      .section-head { margin-bottom: 28px; }
+      .section-head .h2 { margin-bottom: 4px; }
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+      @media (max-width: 820px) {
+        .split, .grid-3 { grid-template-columns: 1fr; }
+        .grid-2 { grid-template-columns: 1fr 1fr; }
+      }
+      @media (max-width: 480px) {
+        .grid-2 { grid-template-columns: 1fr; }
+      }
+
+      /* ── Typography ── */
+      .h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+      .h2 { font-size: clamp(1.2rem, 2.5vw, 1.7rem); font-weight: 700; line-height: 1.2; }
+      .muted { color: var(--muted); font-size: 0.92rem; }
+      .small { font-size: 0.82rem; }
+      .lede { font-size: 1.05rem; color: var(--muted); margin-bottom: 20px; max-width: 560px; }
+      b { font-weight: 700; color: var(--text); }
+
+      /* ── Topbar ── */
+      .topbar {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(11,15,20,.92); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav { display: flex; align-items: center; gap: 20px; height: 60px; }
+      .brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; font-size: 1.05rem; }
+      .brand svg { width: 32px; height: 32px; flex-shrink: 0; }
+      .brand .sub { font-size: 0.78rem; font-weight: 500; color: var(--muted); border-left: 1px solid var(--border); padding-left: 10px; }
+      .navlinks { display: flex; gap: 4px; margin: 0 auto; }
+      .navlinks a { color: var(--muted); font-size: 0.88rem; font-weight: 500; padding: 6px 12px; border-radius: 20px; transition: all .2s; }
+      .navlinks a:hover, .navlinks a.is-active { color: var(--text); background: var(--surface2); }
+      .lang { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+      @media (max-width: 700px) {
+        .navlinks { display: none; }
+        .lang .btn { display: none; }
+      }
+
+      /* ── Buttons ── */
+      .btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 18px; border-radius: 24px; font: 600 0.88rem var(--font);
+        border: 1px solid var(--border); cursor: pointer; transition: all .2s;
+        background: var(--surface2); color: var(--text); text-decoration: none;
+      }
+      .btn:hover { background: var(--surface); border-color: rgba(255,255,255,.18); }
+      .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); }
+      .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #000; }
+      .btn-ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+      .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,.25); background: var(--surface2); }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
+      /* ── Pills ── */
+      .pill {
+        padding: 5px 14px; border-radius: 20px; font: 600 0.8rem var(--font);
+        border: 1px solid var(--border); cursor: pointer; background: transparent;
+        color: var(--muted); transition: all .2s;
+      }
+      .pill:hover, .pill.is-active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+      /* ── Cards & tiles ── */
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+      .pad { padding: 28px; }
+      .tile {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 20px; transition: border-color .2s;
+      }
+      .tile:hover { border-color: rgba(255,255,255,.15); }
+      .tile h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+
+      /* ── Chips ── */
+      .chip {
+        display: inline-block; padding: 3px 10px; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 600; background: var(--surface2);
+        border: 1px solid var(--border); color: var(--muted);
+      }
+      .chiprow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+      /* ── Badge ── */
+      .badge {
+        display: inline-block; padding: 2px 8px; border-radius: 6px;
+        font-size: 0.7rem; font-weight: 700; background: var(--accent); color: #000;
+        letter-spacing: .05em;
+      }
+      .news-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--muted); font-size: 0.82rem; }
+
+      /* ── Dot kicker ── */
+      .kicker { font-size: 0.8rem; font-weight: 600; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+      /* ── Hero ── */
+      .hero { padding: 48px 0; }
+      .hero-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      @media (max-width: 820px) { .hero-grid { grid-template-columns: 1fr; } }
+
+      /* ── Stat row ── */
+      .statrow { display: flex; gap: 24px; flex-wrap: wrap; border-top: 1px solid var(--border); padding-top: 16px; }
+      .stat { display: flex; flex-direction: column; font-size: 0.82rem; }
+      .stat b { font-size: 1.1rem; color: var(--accent); }
+
+      /* ── Hero art (CSS-only bottles) ── */
+      .hero-art { position: relative; height: 120px; margin: 16px 0; }
+      .bottle {
+        position: absolute; bottom: 0; border-radius: 4px 4px 0 0;
+        background: linear-gradient(160deg, #2a3a2a, #1a2a1a);
+      }
+      .b1 { left: 10%; width: 28px; height: 90px; background: linear-gradient(160deg,#2d4a8a,#1a2a5a); }
+      .b2 { left: 30%; width: 32px; height: 110px; background: linear-gradient(160deg,#4a6a2a,#2a3a1a); }
+      .b3 { left: 55%; width: 28px; height: 80px; background: linear-gradient(160deg,#8a4a2a,#5a2a1a); }
+      .shine { position: absolute; top: 5px; left: 12%; width: 4px; height: 40px; background: rgba(255,255,255,.12); border-radius: 4px; transform: rotate(-10deg); }
+
+      /* ── Banner ── */
+      .image-banner { border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; position: relative; }
+      .banner-grid { display: grid; grid-template-columns: repeat(5,1fr); height: 120px; gap: 2px; }
+      .banner-tile { background: var(--surface2); }
+      .t1 { background: linear-gradient(135deg,#1a2a4a,#0d1a30); }
+      .t2 { background: linear-gradient(135deg,#2a3a1a,#1a2510); }
+      .t3 { background: linear-gradient(135deg,#3a2a1a,#251810); }
+      .t4 { background: linear-gradient(135deg,#1a3a2a,#102518); }
+      .t5 { background: linear-gradient(135deg,#2a1a3a,#180d25); }
+      .banner-label { position: absolute; bottom: 12px; left: 16px; display: flex; align-items: center; gap: 10px; }
+
+      /* ── Product cards ── */
+      .tile.product { display: flex; flex-direction: column; }
+      .prod-img { border-radius: var(--radius-sm); overflow: hidden; margin-bottom: 12px; height: 160px; position: relative; background: var(--surface2); }
+      .prod-img img { width: 100%; height: 100%; object-fit: cover; }
+      .prod-stamp {
+        position: absolute; top: 8px; right: 8px; background: var(--accent); color: #000;
+        font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 4px; letter-spacing: .06em;
+      }
+      .g1 { background: linear-gradient(135deg,#1a2a4a,#0d1a30); }
+      .g2 { background: linear-gradient(135deg,#2a3a1a,#1a2510); }
+      .g3 { background: linear-gradient(135deg,#3a2a1a,#251810); }
+
+      /* ── Tabs ── */
+      .tabs { display: flex; gap: 8px; flex-wrap: wrap; }
+
+      /* ── Field ── */
+      .field { display: flex; flex-direction: column; gap: 4px; }
+      .label { font-size: 0.82rem; font-weight: 600; color: var(--muted); }
+
+      /* ── Footer ── */
+      .footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 40px; }
+      .foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+      /* ── Modal ── */
+      .modal {
+        display: none; position: fixed; inset: 0; z-index: 200;
+        background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+        align-items: center; justify-content: center; padding: 20px;
+      }
+      .modal.is-open { display: flex; }
+      .modal-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); max-width: 520px; width: 100%; }
+      .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+      .modal-head h3 { font-weight: 700; }
+      .modal-body { padding: 24px; }
+      .x { background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; line-height: 1; }
+      .x:hover { color: var(--text); }
+
+      /* ── Toast ── */
+      .toast {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+        background: var(--surface); border: 1px solid var(--border); border-radius: 24px;
+        padding: 10px 22px; font-size: 0.88rem; font-weight: 600;
+        transition: transform .3s; z-index: 300; white-space: nowrap;
+      }
+      .toast.show { transform: translateX(-50%) translateY(0); }
+    </style>
+  </head>
+  <body class="theme-birraingross">
+    <header class="topbar">
+      <div class="container">
+        <nav class="nav">
+          <a class="brand" href="#top" aria-label="SIRVIS seller page">
+            <!-- Inline SVG logo replacing the missing PNG -->
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="32" height="32" rx="8" fill="#f5a623"/>
+              <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#000" font-family="system-ui" font-weight="800" font-size="11">SV</text>
+            </svg>
+            <span class="sub" data-i18n="brand_sub">Seller Page</span>
+          </a>
+
+          <div class="navlinks" aria-label="Primary">
+            <a href="#seller" data-nav="seller" data-i18n="nav_seller">Venditore</a>
+            <a href="#news" data-nav="news" data-i18n="nav_news">Novità</a>
+            <a href="#guides" data-nav="guides" data-i18n="nav_guides">Guide</a>
+            <a href="#promo" data-nav="promo" data-i18n="nav_promo">Promo</a>
+          </div>
+
+          <div class="lang" aria-label="Language toggle">
+            <button class="pill is-active" type="button" data-lang="it">IT</button>
+            <button class="pill" type="button" data-lang="en">EN</button>
+            <button class="btn btn-primary" id="openLead" type="button" data-i18n="cta_contact">Richiedi contatto</button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="container">
+          <div class="hero-grid">
+            <div class="card pad">
+              <div class="kicker"><span class="dot" aria-hidden="true"></span> <span data-i18n="kicker">Partner ufficiale su SIRVIS</span></div>
+              <h1 class="h1" data-i18n="h1">BirraIngross: assortimento smart per bar, locali e retail</h1>
+              <p class="lede" data-i18n="lede">Dalle birre artigianali alle referenze più richieste: consegna rapida, disponibilità trasparente e consigli per aumentare lo scontrino medio.</p>
+              <div class="actions">
+                <a class="btn btn-primary" href="#promo" data-i18n="cta_view_promo">Scopri le promo</a>
+                <a class="btn btn-ghost" href="#guides" data-i18n="cta_guides">Cocktail & tip</a>
+              </div>
+              <div class="statrow" aria-label="Highlights">
+                <div class="stat"><b>24–48h</b><span data-i18n="stat_1">Consegna in Italia</span></div>
+                <div class="stat"><b>+350</b><span data-i18n="stat_2">Referenze attive</span></div>
+                <div class="stat"><b>Top seller</b><span data-i18n="stat_3">Selezione mensile</span></div>
+              </div>
+            </div>
+
+            <div class="card pad">
+              <h2 class="h2" data-i18n="quick_title">Cosa trovi qui</h2>
+              <div class="hero-art" aria-hidden="true">
+                <div class="bottle b1"></div>
+                <div class="bottle b2"></div>
+                <div class="bottle b3"></div>
+                <div class="shine"></div>
+              </div>
+              <div class="muted" data-i18n-html="quick_body">
+                <ul>
+                  <li>Ultime news e nuove referenze</li>
+                  <li>Guide cocktail + top tips per il servizio</li>
+                  <li>Promo e bundle stagionali</li>
+                  <li>Contatto rapido con il team</li>
+                </ul>
+              </div>
+              <div class="chiprow">
+                <span class="chip">Birre</span>
+                <span class="chip">Spirits</span>
+                <span class="chip">Mixology</span>
+                <span class="chip">Retail</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="seller">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="seller_title">Il venditore</h2>
+            <div class="muted" data-i18n="seller_sub">Chi è BirraIngross e perché conviene su SIRVIS</div>
+          </div>
+          <div class="image-banner" aria-hidden="true">
+            <div class="banner-grid">
+              <div class="banner-tile t1"></div>
+              <div class="banner-tile t2"></div>
+              <div class="banner-tile t3"></div>
+              <div class="banner-tile t4"></div>
+              <div class="banner-tile t5"></div>
+            </div>
+            <div class="banner-label">
+              <span class="badge">BIRRAINGROSS</span>
+              <span class="muted" data-i18n="banner_note">Assortimento • disponibilità • consegna</span>
+            </div>
+          </div>
+          <div class="split">
+            <div class="tile">
+              <h3 data-i18n="seller_h3">Affidabilità + rotazione veloce</h3>
+              <div class="muted" data-i18n="seller_p">BirraIngross è specializzato in forniture per Ho.Re.Ca e retail: assortimento curato, disponibilità aggiornata e alternative consigliate quando una referenza va in out-of-stock.</div>
+              <div class="chiprow">
+                <span class="chip" data-i18n="seller_chip_1">Assortimento curato</span>
+                <span class="chip" data-i18n="seller_chip_2">Consegna rapida</span>
+                <span class="chip" data-i18n="seller_chip_3">Supporto dedicato</span>
+              </div>
+            </div>
+            <div class="tile">
+              <h3 data-i18n="seller_h3b">Top categorie</h3>
+              <div class="grid-2">
+                <div class="tile">
+                  <h3>🍺 <span data-i18n="cat_beer">Birre</span></h3>
+                  <div class="muted" data-i18n="cat_beer_p">Lager, IPA, artigianali, fusti e novità.</div>
+                </div>
+                <div class="tile">
+                  <h3>🥃 <span data-i18n="cat_spirits">Spirits</span></h3>
+                  <div class="muted" data-i18n="cat_spirits_p">Gin, vodka, rum e amari.</div>
+                </div>
+                <div class="tile">
+                  <h3>🍋 <span data-i18n="cat_mix">Mix & garnish</span></h3>
+                  <div class="muted" data-i18n="cat_mix_p">Toniche, ginger beer, sciroppi, garnish.</div>
+                </div>
+                <div class="tile">
+                  <h3>📦 <span data-i18n="cat_bundles">Bundle</span></h3>
+                  <div class="muted" data-i18n="cat_bundles_p">Pacchetti pronti per eventi e stagionalità.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="featured">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="feat_title">In evidenza</h2>
+            <div class="muted" data-i18n="feat_sub">Idee "pronte a vendere" per aumentare rotazione e scontrino</div>
+          </div>
+          <div class="grid-3">
+            <article class="tile product">
+              <div class="prod-img g1">
+                <img src="https://www.birraingross.it/wp-content/uploads/2024/02/TO-OL-DIPA-500x500.jpg" alt="TO ØL DIPA" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                <div class="prod-stamp">TOP</div>
+              </div>
+              <h3 data-i18n="feat_1t">Selection IPA Pack</h3>
+              <div class="muted" data-i18n="feat_1p">Mix di IPA craft: perfetto per "tap takeover" o menù stagionali.</div>
+              <div class="chiprow"><span class="chip">Craft</span><span class="chip">Limited</span><span class="chip">Margin</span></div>
+            </article>
+            <article class="tile product">
+              <div class="prod-img g2">
+                <img src="https://www.birraingross.it/wp-content/uploads/2024/02/TO-OL-SNUBLE-JUICE_SITO-500x500.jpg" alt="TO ØL Snuble Juice" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                <div class="prod-stamp">BUNDLE</div>
+              </div>
+              <h3 data-i18n="feat_2t">Aperitivo Shelf</h3>
+              <div class="muted" data-i18n="feat_2p">Prosecco + aperitivo + soda + garnish. Menu‑ready in 1 click.</div>
+              <div class="chiprow"><span class="chip">Upsell</span><span class="chip">Speed</span><span class="chip">Summer</span></div>
+            </article>
+            <article class="tile product">
+              <div class="prod-img g3">
+                <img src="https://www.birraingross.it/wp-content/uploads/2020/12/LATTINA-BREWGOG-HAZY-JANE.jpg" alt="Brewdog Hazy Jane" loading="lazy" decoding="async" referrerpolicy="no-referrer" />
+                <div class="prod-stamp">NEW</div>
+              </div>
+              <h3 data-i18n="feat_3t">Premium Gin Focus</h3>
+              <div class="muted" data-i18n="feat_3p">3 gin + 2 toniche consigliate + garnish: aumenta conversione al banco.</div>
+              <div class="chiprow"><span class="chip">Mixology</span><span class="chip">CTR</span><span class="chip">RoI</span></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="news">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="news_title">Ultime novità</h2>
+            <div class="muted" data-i18n="news_sub">Filtra per vedere aggiornamenti, promo e nuove referenze</div>
+          </div>
+          <div class="tabs" aria-label="News filters">
+            <button class="pill is-active" type="button" data-news-tab="all" data-i18n="news_all">Tutte</button>
+            <button class="pill" type="button" data-news-tab="new" data-i18n="news_new">Nuovi arrivi</button>
+            <button class="pill" type="button" data-news-tab="promo" data-i18n="news_promo">Promo</button>
+            <button class="pill" type="button" data-news-tab="ops" data-i18n="news_ops">Servizio</button>
+          </div>
+          <div class="grid-3" style="margin-top:12px">
+            <article class="tile news-card" data-news="new">
+              <div class="news-meta"><span class="badge">NEW</span><span>Mar 2026</span></div>
+              <h3 data-i18n="n1_t">Nuove IPA a rotazione</h3>
+              <div class="muted" data-i18n="n1_p">Selezione mensile con etichette craft — quantità limitate.</div>
+              <div class="chiprow"><span class="chip">IPA</span><span class="chip">Craft</span></div>
+            </article>
+            <article class="tile news-card" data-news="promo">
+              <div class="news-meta"><span class="badge">PROMO</span><span>Mar 2026</span></div>
+              <h3 data-i18n="n2_t">Bundle aperitivo</h3>
+              <div class="muted" data-i18n="n2_p">Mix spritz + garnish con prezzo lancio per locali.</div>
+              <div class="chiprow"><span class="chip">Aperitivo</span><span class="chip">Bundle</span></div>
+            </article>
+            <article class="tile news-card" data-news="ops">
+              <div class="news-meta"><span class="badge">OPS</span><span>Feb 2026</span></div>
+              <h3 data-i18n="n3_t">Tracking migliorato</h3>
+              <div class="muted" data-i18n="n3_p">Notifiche di spedizione e finestre di consegna più chiare.</div>
+              <div class="chiprow"><span class="chip">Logistica</span><span class="chip">UX</span></div>
+            </article>
+          </div>
+
+          <div class="tile" style="margin-top:12px">
+            <div class="section-head" style="margin:0 0 8px">
+              <h2 class="h2" style="font-size:1.25rem" data-i18n="newsletter_title">Ricevi aggiornamenti</h2>
+              <div class="muted" data-i18n="newsletter_sub">Newsletter mensile con promo e nuove referenze</div>
+            </div>
+            <div class="split" style="align-items:end">
+              <label class="field">
+                <span class="label" data-i18n="newsletter_label">Email</span>
+                <input id="newsletterEmail" type="email" data-i18n-placeholder="newsletter_ph" placeholder="nome@azienda.it" />
+              </label>
+              <button class="btn btn-primary" id="newsletterBtn" type="button" data-i18n="newsletter_cta">Iscriviti</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="guides">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="guides_title">Top tips & cocktail guides</h2>
+            <div class="muted" data-i18n="guides_sub">Seleziona l'occasione e ottieni idee pronte</div>
+          </div>
+          <div class="split">
+            <div class="tile">
+              <h3 data-i18n="builder_title">Cocktail builder</h3>
+              <div class="muted" data-i18n="builder_sub">Idee rapide per menu stagionali e serate a tema.</div>
+              <div style="margin-top:10px">
+                <div class="grid-2">
+                  <label class="field">
+                    <span class="label" data-i18n="builder_spirit">Base</span>
+                    <select id="spirit">
+                      <option value="any" data-i18n="any">Qualsiasi</option>
+                      <option value="aperitivo">Aperitivo</option>
+                      <option value="gin">Gin</option>
+                      <option value="vodka">Vodka</option>
+                      <option value="whisky">Whisky</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="label" data-i18n="builder_occasion">Occasione</span>
+                    <select id="occasion">
+                      <option value="any" data-i18n="any">Qualsiasi</option>
+                      <option value="summer" data-i18n="occ_summer">Estate</option>
+                      <option value="evening" data-i18n="occ_evening">Serata</option>
+                      <option value="party" data-i18n="occ_party">Evento</option>
+                    </select>
+                  </label>
+                </div>
+                <button class="btn btn-primary" id="cocktailBtn" type="button" style="margin-top:12px" data-i18n="builder_cta">Suggerisci</button>
+              </div>
+            </div>
+            <div class="tile">
+              <h3 data-i18n="tips_title">Top tips</h3>
+              <div class="muted" data-i18n-html="tips_body">
+                <ul>
+                  <li>Metti in evidenza 3 bestseller: aumentano la scelta rapida.</li>
+                  <li>Crea un "bundle aperitivo" per alzare lo scontrino medio.</li>
+                  <li>Foto coerenti e formati standard: +CTR sugli ordini.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="grid-3" id="cocktailOut" style="margin-top:12px"></div>
+        </div>
+      </section>
+
+      <section class="section" id="promo">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="promo_title">Promozioni</h2>
+            <div class="muted" data-i18n="promo_sub">Pacchetti pensati per vendere di più su SIRVIS</div>
+          </div>
+          <div class="grid-3">
+            <article class="tile">
+              <div class="news-meta"><span class="badge">BUNDLE</span><span data-i18n="promo_tag_1">Stagionale</span></div>
+              <h3 data-i18n="p1_t">Aperitivo "Spritz Week"</h3>
+              <div class="muted" data-i18n="p1_p">Prosecco + aperitivo + soda + garnish. Pronto per menu.</div>
+              <div class="chiprow"><span class="chip">Margin</span><span class="chip">Speed</span></div>
+            </article>
+            <article class="tile">
+              <div class="news-meta"><span class="badge">PROMO</span><span data-i18n="promo_tag_2">Limitata</span></div>
+              <h3 data-i18n="p2_t">Top Lager Pallet</h3>
+              <div class="muted" data-i18n="p2_p">Sconto su volume per locali ad alta rotazione.</div>
+              <div class="chiprow"><span class="chip">Volume</span><span class="chip">Stock</span></div>
+            </article>
+            <article class="tile">
+              <div class="news-meta"><span class="badge">ADS</span><span data-i18n="promo_tag_3">Retail Media</span></div>
+              <h3 data-i18n="p3_t">Sponsored placement</h3>
+              <div class="muted" data-i18n="p3_p">Aumenta visibilità in categoria e ricerca su SIRVIS.</div>
+              <div class="chiprow"><span class="chip">CTR</span><span class="chip">ROAS</span></div>
+            </article>
+          </div>
+          <div class="tile" style="margin-top:12px">
+            <div class="section-head" style="margin:0 0 8px">
+              <h2 class="h2" style="font-size:1.25rem" data-i18n="promo_cta_title">Vuoi una proposta su misura?</h2>
+              <div class="muted" data-i18n="promo_cta_sub">Dicci obiettivi e assortimento: ti rispondiamo con un piano.</div>
+            </div>
+            <button class="btn btn-primary" type="button" id="openLead2" data-i18n="cta_contact">Richiedi contatto</button>
+            <a class="btn" href="SIRVIS___BirraIngross___Performance_Dashboard.html" style="margin-left:8px" data-i18n="cta_performance">Dashboard performance (seller)</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container foot">
+        <div class="small muted">
+          <div><b>SIRVIS</b> • <span data-i18n="foot_left">Marketplace & tools per supplier</span></div>
+          <div>© <span id="year"></span> <span data-i18n="foot_copy">Demo pages — no domain required</span></div>
+        </div>
+        <div class="small muted">
+          <a href="SIRVIS___BirraIngross___Performance_Dashboard.html" class="btn btn-ghost" data-i18n="cta_performance">Dashboard performance (seller)</a>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Lead modal -->
+    <div class="modal" id="leadModal" aria-label="Contact modal" role="dialog" aria-modal="true">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h3 data-i18n="lead_title">Richiedi contatto</h3>
+          <button class="x" type="button" data-close-modal aria-label="Close">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="grid-2">
+            <label class="field">
+              <span class="label" data-i18n="lead_name">Nome</span>
+              <input id="leadName" data-i18n-placeholder="lead_name_ph" placeholder="Nome e cognome" />
+            </label>
+            <label class="field">
+              <span class="label">Email</span>
+              <input id="leadEmail" type="email" placeholder="nome@azienda.it" />
+            </label>
+            <label class="field" style="grid-column:1/-1">
+              <span class="label" data-i18n="lead_msg">Messaggio</span>
+              <textarea id="leadMsg" data-i18n-placeholder="lead_msg_ph" placeholder="Cosa ti serve? (assortimento, promo, consegna, ads…)"></textarea>
+            </label>
+            <div style="grid-column:1/-1; display:flex; gap:10px; justify-content:flex-end">
+              <button class="btn" type="button" data-close-modal data-i18n="cancel">Annulla</button>
+              <button class="btn btn-primary" id="leadSubmit" type="button" data-i18n="send">Invia</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast" aria-live="polite"></div>
+
+    <script>
+      window.__I18N__ = {
+        it: {
+          brand_sub: "Seller Page", nav_seller: "Venditore", nav_news: "Novità", nav_guides: "Guide", nav_promo: "Promo",
+          cta_contact: "Richiedi contatto", kicker: "Partner ufficiale su SIRVIS",
+          h1: "BirraIngross: assortimento smart per bar, locali e retail",
+          lede: "Dalle birre artigianali alle referenze più richieste: consegna rapida, disponibilità trasparente e consigli per aumentare lo scontrino medio.",
+          cta_view_promo: "Scopri le promo", cta_guides: "Cocktail & tip",
+          stat_1: "Consegna in Italia", stat_2: "Referenze attive", stat_3: "Selezione mensile",
+          quick_title: "Cosa trovi qui",
+          quick_body: "<ul><li>Ultime news e nuove referenze</li><li>Guide cocktail + top tips per il servizio</li><li>Promo e bundle stagionali</li><li>Contatto rapido con il team</li></ul>",
+          seller_title: "Il venditore", seller_sub: "Chi è BirraIngross e perché conviene su SIRVIS",
+          seller_h3: "Affidabilità + rotazione veloce",
+          seller_p: "BirraIngross è specializzato in forniture per Ho.Re.Ca e retail: assortimento curato, disponibilità aggiornata e alternative consigliate quando una referenza va in out-of-stock.",
+          seller_chip_1: "Assortimento curato", seller_chip_2: "Consegna rapida", seller_chip_3: "Supporto dedicato",
+          seller_h3b: "Top categorie", cat_beer: "Birre", cat_beer_p: "Lager, IPA, artigianali, fusti e novità.",
+          cat_spirits: "Spirits", cat_spirits_p: "Gin, vodka, rum e amari.",
+          cat_mix: "Mix & garnish", cat_mix_p: "Toniche, ginger beer, sciroppi, garnish.",
+          cat_bundles: "Bundle", cat_bundles_p: "Pacchetti pronti per eventi e stagionalità.",
+          news_title: "Ultime novità", news_sub: "Filtra per vedere aggiornamenti, promo e nuove referenze",
+          news_all: "Tutte", news_new: "Nuovi arrivi", news_promo: "Promo", news_ops: "Servizio",
+          n1_t: "Nuove IPA a rotazione", n1_p: "Selezione mensile con etichette craft — quantità limitate.",
+          n2_t: "Bundle aperitivo", n2_p: "Mix spritz + garnish con prezzo lancio per locali.",
+          n3_t: "Tracking migliorato", n3_p: "Notifiche di spedizione e finestre di consegna più chiare.",
+          newsletter_title: "Ricevi aggiornamenti", newsletter_sub: "Newsletter mensile con promo e nuove referenze",
+          newsletter_label: "Email", newsletter_ph: "nome@azienda.it", newsletter_cta: "Iscriviti",
+          guides_title: "Top tips & cocktail guides", guides_sub: "Seleziona l'occasione e ottieni idee pronte",
+          builder_title: "Cocktail builder", builder_sub: "Idee rapide per menu stagionali e serate a tema.",
+          builder_spirit: "Base", builder_occasion: "Occasione", any: "Qualsiasi",
+          occ_summer: "Estate", occ_evening: "Serata", occ_party: "Evento", builder_cta: "Suggerisci",
+          tips_title: "Top tips",
+          tips_body: "<ul><li>Metti in evidenza 3 bestseller: aumentano la scelta rapida.</li><li>Crea un \"bundle aperitivo\" per alzare lo scontrino medio.</li><li>Foto coerenti e formati standard: +CTR sugli ordini.</li></ul>",
+          promo_title: "Promozioni", promo_sub: "Pacchetti pensati per vendere di più su SIRVIS",
+          promo_tag_1: "Stagionale", promo_tag_2: "Limitata", promo_tag_3: "Retail Media",
+          p1_t: "Aperitivo \"Spritz Week\"", p1_p: "Prosecco + aperitivo + soda + garnish. Pronto per menu.",
+          p2_t: "Top Lager Pallet", p2_p: "Sconto su volume per locali ad alta rotazione.",
+          p3_t: "Sponsored placement", p3_p: "Aumenta visibilità in categoria e ricerca su SIRVIS.",
+          promo_cta_title: "Vuoi una proposta su misura?", promo_cta_sub: "Dicci obiettivi e assortimento: ti rispondiamo con un piano.",
+          cta_performance: "Dashboard performance (seller)",
+          foot_left: "Marketplace & tools per supplier", foot_copy: "Demo pages — no domain required",
+          lead_title: "Richiedi contatto", lead_name: "Nome", lead_name_ph: "Nome e cognome",
+          lead_msg: "Messaggio", lead_msg_ph: "Cosa ti serve? (assortimento, promo, consegna, ads…)",
+          cancel: "Annulla", send: "Invia",
+          toast_email: "Inserisci una email valida.", toast_newsletter: "Iscrizione completata. Ti aggiorniamo presto.",
+          toast_lead: "Richiesta inviata. Ti ricontattiamo a breve.",
+          banner_note: "Assortimento • disponibilità • consegna",
+          feat_title: "In evidenza", feat_sub: "Idee \"pronte a vendere\" per aumentare rotazione e scontrino",
+          feat_1t: "Selection IPA Pack", feat_1p: "Mix di IPA craft: perfetto per \"tap takeover\" o menù stagionali.",
+          feat_2t: "Aperitivo Shelf", feat_2p: "Prosecco + aperitivo + soda + garnish. Menu‑ready in 1 click.",
+          feat_3t: "Premium Gin Focus", feat_3p: "3 gin + 2 toniche consigliate + garnish: aumenta conversione al banco.",
+        },
+        en: {
+          brand_sub: "Seller Page", nav_seller: "Seller", nav_news: "Latest news", nav_guides: "Guides", nav_promo: "Promotions",
+          cta_contact: "Request contact", kicker: "Official partner on SIRVIS",
+          h1: "BirraIngross: smart assortment for bars, venues and retail",
+          lede: "From craft beers to best‑selling references: fast delivery, transparent availability, and tips to increase your average basket.",
+          cta_view_promo: "See promotions", cta_guides: "Cocktails & tips",
+          stat_1: "Delivery in Italy", stat_2: "Active references", stat_3: "Monthly selection",
+          quick_title: "What you'll find here",
+          quick_body: "<ul><li>Latest news and new references</li><li>Cocktail guides + service tips</li><li>Seasonal promos and bundles</li><li>Fast contact with the team</li></ul>",
+          seller_title: "The seller", seller_sub: "Who BirraIngross is and why it works on SIRVIS",
+          seller_h3: "Reliable + fast rotation",
+          seller_p: "BirraIngross supplies Ho.Re.Ca and retail: curated assortment, updated availability and smart alternatives when something is out of stock.",
+          seller_chip_1: "Curated assortment", seller_chip_2: "Fast delivery", seller_chip_3: "Dedicated support",
+          seller_h3b: "Top categories", cat_beer: "Beers", cat_beer_p: "Lager, IPA, craft, kegs and new drops.",
+          cat_spirits: "Spirits", cat_spirits_p: "Gin, vodka, rum and bitters.",
+          cat_mix: "Mix & garnish", cat_mix_p: "Tonics, ginger beer, syrups, garnish.",
+          cat_bundles: "Bundles", cat_bundles_p: "Ready packs for events and seasons.",
+          news_title: "Latest news", news_sub: "Filter updates, promos and new references",
+          news_all: "All", news_new: "New arrivals", news_promo: "Promos", news_ops: "Service",
+          n1_t: "New rotating IPAs", n1_p: "Monthly craft picks — limited quantities.",
+          n2_t: "Aperitivo bundle", n2_p: "Spritz mix + garnish with launch price for venues.",
+          n3_t: "Improved tracking", n3_p: "Clearer shipping notifications and delivery windows.",
+          newsletter_title: "Get updates", newsletter_sub: "Monthly newsletter with promos and new drops",
+          newsletter_label: "Email", newsletter_ph: "name@company.com", newsletter_cta: "Subscribe",
+          guides_title: "Top tips & cocktail guides", guides_sub: "Choose an occasion to get ready-to-use ideas",
+          builder_title: "Cocktail builder", builder_sub: "Quick ideas for seasonal menus and themed nights.",
+          builder_spirit: "Base", builder_occasion: "Occasion", any: "Any",
+          occ_summer: "Summer", occ_evening: "Evening", occ_party: "Event", builder_cta: "Suggest",
+          tips_title: "Top tips",
+          tips_body: "<ul><li>Feature 3 bestsellers: faster decisions.</li><li>Create an \"aperitivo bundle\" to lift basket value.</li><li>Consistent photos and formats: higher CTR.</li></ul>",
+          promo_title: "Promotions", promo_sub: "Packages designed to sell more on SIRVIS",
+          promo_tag_1: "Seasonal", promo_tag_2: "Limited", promo_tag_3: "Retail Media",
+          p1_t: "Aperitivo \"Spritz Week\"", p1_p: "Prosecco + aperitivo + soda + garnish. Menu-ready.",
+          p2_t: "Top Lager Pallet", p2_p: "Volume discount for high-rotation venues.",
+          p3_t: "Sponsored placement", p3_p: "Boost visibility in category and search on SIRVIS.",
+          promo_cta_title: "Want a tailored proposal?", promo_cta_sub: "Tell us goals and assortment: we'll reply with a plan.",
+          cta_performance: "Performance dashboard (seller)",
+          foot_left: "Marketplace & tools for suppliers", foot_copy: "Demo pages — no domain required",
+          lead_title: "Request contact", lead_name: "Name", lead_name_ph: "Full name",
+          lead_msg: "Message", lead_msg_ph: "What do you need? (assortment, promos, delivery, ads…)",
+          cancel: "Cancel", send: "Send",
+          toast_email: "Please enter a valid email.", toast_newsletter: "Subscribed. We'll send updates soon.",
+          toast_lead: "Request sent. We'll reply soon.",
+          banner_note: "Assortment • availability • delivery",
+          feat_title: "Featured", feat_sub: "Ready-to-sell ideas to boost rotation and basket value",
+          feat_1t: "Selection IPA Pack", feat_1p: "Craft IPA mix: perfect for tap takeovers or seasonal menus.",
+          feat_2t: "Aperitivo Shelf", feat_2p: "Prosecco + aperitivo + soda + garnish. Menu‑ready in 1 click.",
+          feat_3t: "Premium Gin Focus", feat_3p: "3 gins + 2 recommended tonics + garnish: lift bar conversion.",
+        }
+      };
+
+      // ── i18n ──
+      function applyLang(lang) {
+        const d = window.__I18N__[lang] || window.__I18N__.it;
+        document.documentElement.setAttribute('data-lang', lang);
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.dataset.i18n; if (d[k]) el.textContent = d[k];
+        });
+        document.querySelectorAll('[data-i18n-html]').forEach(el => {
+          const k = el.dataset.i18nHtml; if (d[k]) el.innerHTML = d[k];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const k = el.dataset.i18nPlaceholder; if (d[k]) el.placeholder = d[k];
+        });
+        document.querySelectorAll('.pill[data-lang]').forEach(b => {
+          b.classList.toggle('is-active', b.dataset.lang === lang);
+        });
+        localStorage.setItem('sirvis_lang', lang);
+      }
+      document.querySelectorAll('.pill[data-lang]').forEach(b => {
+        b.addEventListener('click', () => applyLang(b.dataset.lang));
+      });
+      applyLang(localStorage.getItem('sirvis_lang') || 'it');
+
+      // ── Active nav ──
+      const navLinks = document.querySelectorAll('.navlinks a');
+      const sections = document.querySelectorAll('section[id]');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            navLinks.forEach(a => a.classList.toggle('is-active', a.dataset.nav === e.target.id));
+          }
+        });
+      }, { threshold: 0.3 });
+      sections.forEach(s => obs.observe(s));
+
+      // ── Toast ──
+      const toast = document.getElementById('toast');
+      function showToast(msg) {
+        toast.textContent = msg; toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+      }
+
+      // ── Modal ──
+      const modal = document.getElementById('leadModal');
+      function openModal() { modal.classList.add('is-open'); }
+      function closeModal() { modal.classList.remove('is-open'); }
+      document.getElementById('openLead').addEventListener('click', openModal);
+      document.getElementById('openLead2').addEventListener('click', openModal);
+      document.querySelectorAll('[data-close-modal]').forEach(b => b.addEventListener('click', closeModal));
+      modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+
+      // ── Lead form ──
+      document.getElementById('leadSubmit').addEventListener('click', () => {
+        const lang = document.documentElement.dataset.lang || 'it';
+        const d = window.__I18N__[lang];
+        const email = document.getElementById('leadEmail').value;
+        if (!email || !email.includes('@')) { showToast(d.toast_email); return; }
+        closeModal(); showToast(d.toast_lead);
+      });
+
+      // ── Newsletter ──
+      document.getElementById('newsletterBtn').addEventListener('click', () => {
+        const lang = document.documentElement.dataset.lang || 'it';
+        const d = window.__I18N__[lang];
+        const v = document.getElementById('newsletterEmail').value;
+        if (!v || !v.includes('@')) { showToast(d.toast_email); return; }
+        showToast(d.toast_newsletter);
+        document.getElementById('newsletterEmail').value = '';
+      });
+
+      // ── News tabs ──
+      document.querySelectorAll('[data-news-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('[data-news-tab]').forEach(b => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          const tab = btn.dataset.newsTab;
+          document.querySelectorAll('.news-card').forEach(c => {
+            c.style.display = (tab === 'all' || c.dataset.news === tab) ? '' : 'none';
+          });
+        });
+      });
+
+      // ── Cocktail builder ──
+      const COCKTAILS = [
+        { spirit: 'aperitivo', occasion: 'summer', name: 'Spritz Estivo', desc: 'Aperitivo + Prosecco + soda + arancia.' },
+        { spirit: 'gin', occasion: 'evening', name: 'Gin Tonic Premium', desc: 'Gin secca + tonica + cetriolo + pepe rosa.' },
+        { spirit: 'vodka', occasion: 'party', name: 'Vodka Soda Citrus', desc: 'Vodka + soda + lime + menta fresca.' },
+        { spirit: 'whisky', occasion: 'evening', name: 'Whisky Sour', desc: 'Whisky + succo limone + sciroppo + albume.' },
+        { spirit: 'aperitivo', occasion: 'party', name: 'Negroni Sbagliato', desc: 'Aperitivo + vermouth rosso + Prosecco.' },
+        { spirit: 'gin', occasion: 'summer', name: 'Tom Collins', desc: 'Gin + limone + sciroppo semplice + soda.' },
+        { spirit: 'any', occasion: 'any', name: 'House Spritz', desc: 'Aperitivo locale + soda + ghiaccio + garnish.' },
+      ];
+      document.getElementById('cocktailBtn').addEventListener('click', () => {
+        const sp = document.getElementById('spirit').value;
+        const oc = document.getElementById('occasion').value;
+        const matches = COCKTAILS.filter(c =>
+          (c.spirit === sp || c.spirit === 'any' || sp === 'any') &&
+          (c.occasion === oc || c.occasion === 'any' || oc === 'any')
+        );
+        const pick = matches.length ? matches[Math.floor(Math.random() * matches.length)] : COCKTAILS[COCKTAILS.length - 1];
+        const out = document.getElementById('cocktailOut');
+        out.innerHTML = `<article class="tile"><div class="news-meta"><span class="badge">COCKTAIL</span></div><h3>${pick.name}</h3><div class="muted">${pick.desc}</div></article>`;
+      });
+
+      document.getElementById('year').textContent = String(new Date().getFullYear());
+    </script>
+  </body>
+</html>

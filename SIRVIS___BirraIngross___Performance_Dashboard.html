@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="it" data-lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>SIRVIS × BirraIngross — Performance Dashboard</title>
+    <meta name="description" content="Performance page for BirraIngross: catalog improvements, sales growth, and retail media packages on SIRVIS." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      /* ── Reset & tokens ── */
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --bg: #0b0f14;
+        --surface: #141920;
+        --surface2: #1c2330;
+        --border: rgba(255,255,255,.08);
+        --text: #e8edf4;
+        --muted: #8a96a8;
+        --accent: #f5a623;
+        --accent2: #e67e22;
+        --green: #27ae60;
+        --radius: 14px;
+        --radius-sm: 8px;
+        --font: 'Space Grotesk', system-ui, sans-serif;
+      }
+      html { scroll-behavior: smooth; }
+      body { background: var(--bg); color: var(--text); font-family: var(--font); font-size: 15px; line-height: 1.6; }
+      img { max-width: 100%; display: block; }
+      a { color: var(--accent); text-decoration: none; }
+      ul { padding-left: 1.2em; }
+      li { margin-bottom: 4px; }
+      input[type="range"] {
+        width: 100%; accent-color: var(--accent); margin: 10px 0;
+        height: 4px; cursor: pointer;
+      }
+
+      /* ── Layout ── */
+      .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+      .section { padding: 60px 0; }
+      .section-head { margin-bottom: 28px; }
+      .split { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
+      @media (max-width: 820px) {
+        .split, .grid-3 { grid-template-columns: 1fr; }
+      }
+
+      /* ── Typography ── */
+      .h1 { font-size: clamp(1.6rem, 4vw, 2.4rem); font-weight: 700; line-height: 1.15; margin-bottom: 14px; }
+      .h2 { font-size: clamp(1.2rem, 2.5vw, 1.7rem); font-weight: 700; line-height: 1.2; }
+      .muted { color: var(--muted); font-size: 0.92rem; }
+      .small { font-size: 0.82rem; }
+      .lede { font-size: 1.05rem; color: var(--muted); margin-bottom: 20px; max-width: 560px; }
+      b { font-weight: 700; color: var(--text); }
+
+      /* ── Topbar ── */
+      .topbar {
+        position: sticky; top: 0; z-index: 100;
+        background: rgba(11,15,20,.92); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--border);
+      }
+      .nav { display: flex; align-items: center; gap: 20px; height: 60px; }
+      .brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; font-size: 1.05rem; }
+      .brand svg { width: 32px; height: 32px; flex-shrink: 0; }
+      .brand .sub { font-size: 0.78rem; font-weight: 500; color: var(--muted); border-left: 1px solid var(--border); padding-left: 10px; }
+      .navlinks { display: flex; gap: 4px; margin: 0 auto; }
+      .navlinks a { color: var(--muted); font-size: 0.88rem; font-weight: 500; padding: 6px 12px; border-radius: 20px; transition: all .2s; }
+      .navlinks a:hover, .navlinks a.is-active { color: var(--text); background: var(--surface2); }
+      .lang { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+      @media (max-width: 700px) {
+        .navlinks { display: none; }
+        .lang .btn-primary { display: none; }
+      }
+
+      /* ── Buttons ── */
+      .btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 9px 18px; border-radius: 24px; font: 600 0.88rem var(--font);
+        border: 1px solid var(--border); cursor: pointer; transition: all .2s;
+        background: var(--surface2); color: var(--text); text-decoration: none;
+      }
+      .btn:hover { background: var(--surface); border-color: rgba(255,255,255,.18); }
+      .btn-primary { background: var(--accent); color: #000; border-color: var(--accent); }
+      .btn-primary:hover { background: var(--accent2); border-color: var(--accent2); color: #000; }
+      .btn-ghost { background: transparent; border-color: var(--border); color: var(--muted); }
+      .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,.25); background: var(--surface2); }
+      .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
+
+      /* ── Pills ── */
+      .pill {
+        padding: 5px 14px; border-radius: 20px; font: 600 0.8rem var(--font);
+        border: 1px solid var(--border); cursor: pointer; background: transparent;
+        color: var(--muted); transition: all .2s;
+      }
+      .pill:hover, .pill.is-active { background: var(--accent); color: #000; border-color: var(--accent); }
+
+      /* ── Cards & tiles ── */
+      .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); }
+      .pad { padding: 28px; }
+      .tile {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 20px; transition: border-color .2s;
+      }
+      .tile:hover { border-color: rgba(255,255,255,.15); }
+      .tile h3 { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+
+      /* ── Chips ── */
+      .chip {
+        display: inline-block; padding: 3px 10px; border-radius: 20px;
+        font-size: 0.75rem; font-weight: 600; background: var(--surface2);
+        border: 1px solid var(--border); color: var(--muted);
+      }
+      .chiprow { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+      /* ── Badge ── */
+      .badge {
+        display: inline-block; padding: 2px 8px; border-radius: 6px;
+        font-size: 0.7rem; font-weight: 700; background: var(--accent); color: #000;
+        letter-spacing: .05em;
+      }
+      .news-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: var(--muted); font-size: 0.82rem; }
+
+      /* ── Dot kicker ── */
+      .kicker { font-size: 0.8rem; font-weight: 600; color: var(--accent); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+      .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+      @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+      /* ── Hero ── */
+      .hero { padding: 48px 0; }
+
+      /* ── Footer ── */
+      .footer { border-top: 1px solid var(--border); padding: 28px 0; margin-top: 40px; }
+      .foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+      /* ── Toast ── */
+      .toast {
+        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(80px);
+        background: var(--surface); border: 1px solid var(--border); border-radius: 24px;
+        padding: 10px 22px; font-size: 0.88rem; font-weight: 600;
+        transition: transform .3s; z-index: 300; white-space: nowrap;
+      }
+      .toast.show { transform: translateX(-50%) translateY(0); }
+
+      /* ── KPI big number ── */
+      .kpi-num { font: 700 34px/1.1 'Space Grotesk', system-ui; margin: 8px 0; }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container">
+        <nav class="nav">
+          <a class="brand" href="SIRVIS___BirraIngross___Seller_Page.html" aria-label="Back to seller page">
+            <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <rect width="32" height="32" rx="8" fill="#f5a623"/>
+              <text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" fill="#000" font-family="system-ui" font-weight="800" font-size="11">SV</text>
+            </svg>
+            <span class="sub" data-i18n="perf_sub">Performance</span>
+          </a>
+
+          <div class="navlinks" aria-label="Primary">
+            <a href="#kpi" data-nav="kpi" data-i18n="nav_kpi">KPI</a>
+            <a href="#catalog" data-nav="catalog" data-i18n="nav_catalog">Catalogo</a>
+            <a href="#actions" data-nav="actions" data-i18n="nav_actions">Azioni</a>
+            <a href="#media" data-nav="media" data-i18n="nav_media">Retail Media</a>
+          </div>
+
+          <div class="lang" aria-label="Language toggle">
+            <button class="pill is-active" type="button" data-lang="it">IT</button>
+            <button class="pill" type="button" data-lang="en">EN</button>
+            <a class="btn btn-primary" href="SIRVIS___BirraIngross___Seller_Page.html" data-i18n="cta_back">Torna alla pagina cliente</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="card pad">
+            <div class="kicker"><span class="dot" aria-hidden="true"></span> <span data-i18n="perf_kicker">Dashboard demo • collegabile ai dati reali</span></div>
+            <h1 class="h1" data-i18n="perf_h1">Migliora catalogo. Aumenta vendite. Attiva retail media.</h1>
+            <p class="lede" data-i18n="perf_lede">Questa pagina mostra come BirraIngross può migliorare la performance su SIRVIS: qualità schede, disponibilità, prezzi e campagne sponsorizzate.</p>
+            <div class="actions">
+              <a class="btn btn-primary" href="#actions" data-i18n="cta_fix">Vedi azioni consigliate</a>
+              <a class="btn btn-ghost" href="#media" data-i18n="cta_media">Simula un pacchetto media</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="kpi">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="kpi_title">KPI principali</h2>
+            <div class="muted" data-i18n="kpi_sub">Panoramica 30 giorni (demo)</div>
+          </div>
+          <div class="grid-3">
+            <div class="tile">
+              <h3 data-i18n="kpi1_t">Vendite</h3>
+              <div class="kpi-num">€48.2k</div>
+              <div class="muted" data-i18n="kpi1_p">+12% vs periodo precedente</div>
+              <div class="chiprow"><span class="chip">ROAS 4.2×</span><span class="chip">CTR 1.8%</span></div>
+            </div>
+            <div class="tile">
+              <h3 data-i18n="kpi2_t">Tasso conversione</h3>
+              <div class="kpi-num">2.9%</div>
+              <div class="muted" data-i18n="kpi2_p">Migliora con immagini + attributi</div>
+              <div class="chiprow"><span class="chip">Top SKU: Lager 33cl</span></div>
+            </div>
+            <div class="tile">
+              <h3 data-i18n="kpi3_t">Catalog score</h3>
+              <div class="kpi-num">71/100</div>
+              <div class="muted" data-i18n="kpi3_p">Obiettivo: 85+ per massimizzare ranking</div>
+              <div class="chiprow"><span class="chip">Missing images: 14</span><span class="chip">Missing EAN: 9</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="catalog">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="cat_title">Catalogo: cosa migliorare</h2>
+            <div class="muted" data-i18n="cat_sub">Priorità che impattano ricerca, conversione e riordino</div>
+          </div>
+          <div class="split">
+            <div class="tile">
+              <h3 data-i18n="cat_left_t">Checklist qualità schede</h3>
+              <div class="muted" data-i18n-html="cat_left_p">
+                <ul>
+                  <li>Immagini coerenti (1:1) • minimo 1200px</li>
+                  <li>EAN / GTIN presente</li>
+                  <li>Attributi: formato, gradazione, allergeni, provenienza</li>
+                  <li>Titoli: marca + stile + formato</li>
+                </ul>
+              </div>
+              <div class="chiprow">
+                <span class="chip">Impact: Search</span>
+                <span class="chip">Impact: PDP</span>
+                <span class="chip">Impact: Ads</span>
+              </div>
+            </div>
+            <div class="tile">
+              <h3 data-i18n="cat_right_t">SKU da sistemare (demo)</h3>
+              <div class="muted" data-i18n="cat_right_p">Lista di esempio: usa come task list operativa.</div>
+              <div style="margin-top:10px; display:grid; gap:10px">
+                <div class="tile" style="background:rgba(11,15,20,.25)">
+                  <div class="news-meta"><span class="badge">P1</span><span>SKU 18392</span></div>
+                  <h3>Lager 33cl • Missing images</h3>
+                  <div class="chiprow"><span class="chip">Add 2 photos</span><span class="chip">Fix title</span></div>
+                </div>
+                <div class="tile" style="background:rgba(11,15,20,.25)">
+                  <div class="news-meta"><span class="badge">P1</span><span>SKU 20411</span></div>
+                  <h3>Gin Premium • Missing EAN</h3>
+                  <div class="chiprow"><span class="chip">Add EAN</span><span class="chip">Attributes</span></div>
+                </div>
+                <div class="tile" style="background:rgba(11,15,20,.25)">
+                  <div class="news-meta"><span class="badge">P2</span><span>SKU 19902</span></div>
+                  <h3>IPA 50cl • Missing allergens</h3>
+                  <div class="chiprow"><span class="chip">Allergens</span><span class="chip">Origin</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="actions">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="act_title">Azioni consigliate (prossimi 14 giorni)</h2>
+            <div class="muted" data-i18n="act_sub">Un piano semplice per aumentare ranking e vendite</div>
+          </div>
+          <div class="grid-3">
+            <article class="tile">
+              <div class="news-meta"><span class="badge">WEEK 1</span><span data-i18n="act_impact_1">Impatto alto</span></div>
+              <h3 data-i18n="a1_t">Sistema le top 20 SKU</h3>
+              <div class="muted" data-i18n="a1_p">Immagini, titoli e attributi completi per le SKU più viste.</div>
+              <div class="chiprow"><span class="chip">+CTR</span><span class="chip">+CVR</span></div>
+            </article>
+            <article class="tile">
+              <div class="news-meta"><span class="badge">WEEK 1</span><span data-i18n="act_impact_2">Impatto medio</span></div>
+              <h3 data-i18n="a2_t">Prezzi e disponibilità</h3>
+              <div class="muted" data-i18n="a2_p">Evita out-of-stock su bestseller e definisci sostituti automatici.</div>
+              <div class="chiprow"><span class="chip">Fill rate</span><span class="chip">Reorder</span></div>
+            </article>
+            <article class="tile">
+              <div class="news-meta"><span class="badge">WEEK 2</span><span data-i18n="act_impact_3">Impatto alto</span></div>
+              <h3 data-i18n="a3_t">Attiva retail media</h3>
+              <div class="muted" data-i18n="a3_p">Sponsorizza categorie chiave e proteggi i bestseller in search.</div>
+              <div class="chiprow"><span class="chip">ROAS</span><span class="chip">Share of voice</span></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="media">
+        <div class="container">
+          <div class="section-head">
+            <h2 class="h2" data-i18n="media_title">Retail Media Packages</h2>
+            <div class="muted" data-i18n="media_sub">Simulatore demo + pacchetti consigliati</div>
+          </div>
+          <div class="split">
+            <div class="tile">
+              <h3 data-i18n="media_sim_t">Simulatore ROAS (demo)</h3>
+              <div class="muted" data-i18n="media_sim_p">Muovi lo slider per stimare vendite generate (esempio).</div>
+              <div style="margin-top:12px">
+                <div class="news-meta"><span class="badge" data-i18n="budget">Budget</span><span id="roiSpend">€1,000</span></div>
+                <input id="roiSlider" type="range" min="250" max="5000" step="250" value="1000" />
+                <div class="news-meta" style="margin-top:10px">
+                  <span class="badge" data-i18n="est_sales">Vendite stimate</span><span id="roiSales">€4,200</span>
+                </div>
+                <div class="muted" id="roiOut" style="margin-top:8px"></div>
+              </div>
+            </div>
+            <div class="tile">
+              <h3 data-i18n="media_pack_t">Pacchetti</h3>
+              <div class="muted" data-i18n="media_pack_p">Strutturati per catalog boost, difesa keyword e lancio novità.</div>
+              <div style="margin-top:10px; display:grid; gap:10px">
+                <div class="tile" style="background:rgba(11,15,20,.25)">
+                  <div class="news-meta"><span class="badge">BOOST</span><span>€750/mo</span></div>
+                  <h3 data-i18n="m1_t">Catalog Boost</h3>
+                  <div class="muted" data-i18n="m1_p">Sponsored category + placement su top list.</div>
+                  <div class="chiprow"><span class="chip">Awareness</span><span class="chip">New buyers</span></div>
+                </div>
+                <div class="tile" style="background:rgba(11,15,20,.25)">
+                  <div class="news-meta"><span class="badge">DEFEND</span><span>€1,500/mo</span></div>
+                  <h3 data-i18n="m2_t">Search Defense</h3>
+                  <div class="muted" data-i18n="m2_p">Proteggi keyword brand e bestseller in ricerca.</div>
+                  <div class="chiprow"><span class="chip">ROAS</span><span class="chip">Share</span></div>
+                </div>
+                <div class="tile" style="background:rgba(11,15,20,.25)">
+                  <div class="news-meta"><span class="badge">LAUNCH</span><span>€2,500/mo</span></div>
+                  <h3 data-i18n="m3_t">New Drop Launch</h3>
+                  <div class="muted" data-i18n="m3_p">Pacchetto completo per nuove referenze + promo.</div>
+                  <div class="chiprow"><span class="chip">Velocity</span><span class="chip">CTR</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tile" style="margin-top:12px">
+            <div class="section-head" style="margin:0 0 8px">
+              <h2 class="h2" style="font-size:1.25rem" data-i18n="cta_next_t">Prossimo step</h2>
+              <div class="muted" data-i18n="cta_next_p">Connetti i dati e trasformiamo questi insight in azioni automatiche.</div>
+            </div>
+            <a class="btn btn-primary" href="SIRVIS___BirraIngross___Seller_Page.html#promo" data-i18n="cta_to_customer">Vedi come appare lato cliente</a>
+            <a class="btn btn-ghost" href="SIRVIS___BirraIngross___Seller_Page.html" style="margin-left:8px" data-i18n="cta_back">Torna alla pagina cliente</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container foot">
+        <div class="small muted">
+          <div><b>SIRVIS</b> • <span data-i18n="foot_left">Strumenti per supplier</span></div>
+          <div>© <span id="year"></span> <span data-i18n="foot_copy">Demo dashboard — no domain required</span></div>
+        </div>
+        <div class="small muted">
+          <a href="SIRVIS___BirraIngross___Seller_Page.html" class="btn btn-ghost" data-i18n="cta_back">Torna alla pagina cliente</a>
+        </div>
+      </div>
+    </footer>
+
+    <div class="toast" id="toast" aria-live="polite"></div>
+
+    <script>
+      window.__I18N__ = {
+        it: {
+          perf_sub: "Performance", nav_kpi: "KPI", nav_catalog: "Catalogo", nav_actions: "Azioni", nav_media: "Retail Media",
+          cta_back: "Torna alla pagina cliente",
+          perf_kicker: "Dashboard demo • collegabile ai dati reali",
+          perf_h1: "Migliora catalogo. Aumenta vendite. Attiva retail media.",
+          perf_lede: "Questa pagina mostra come BirraIngross può migliorare la performance su SIRVIS: qualità schede, disponibilità, prezzi e campagne sponsorizzate.",
+          cta_fix: "Vedi azioni consigliate", cta_media: "Simula un pacchetto media",
+          kpi_title: "KPI principali", kpi_sub: "Panoramica 30 giorni (demo)",
+          kpi1_t: "Vendite", kpi1_p: "+12% vs periodo precedente",
+          kpi2_t: "Tasso conversione", kpi2_p: "Migliora con immagini + attributi",
+          kpi3_t: "Catalog score", kpi3_p: "Obiettivo: 85+ per massimizzare ranking",
+          cat_title: "Catalogo: cosa migliorare", cat_sub: "Priorità che impattano ricerca, conversione e riordino",
+          cat_left_t: "Checklist qualità schede",
+          cat_left_p: "<ul><li>Immagini coerenti (1:1) • minimo 1200px</li><li>EAN / GTIN presente</li><li>Attributi: formato, gradazione, allergeni, provenienza</li><li>Titoli: marca + stile + formato</li></ul>",
+          cat_right_t: "SKU da sistemare (demo)", cat_right_p: "Lista di esempio: usa come task list operativa.",
+          act_title: "Azioni consigliate (prossimi 14 giorni)", act_sub: "Un piano semplice per aumentare ranking e vendite",
+          act_impact_1: "Impatto alto", act_impact_2: "Impatto medio", act_impact_3: "Impatto alto",
+          a1_t: "Sistema le top 20 SKU", a1_p: "Immagini, titoli e attributi completi per le SKU più viste.",
+          a2_t: "Prezzi e disponibilità", a2_p: "Evita out-of-stock su bestseller e definisci sostituti automatici.",
+          a3_t: "Attiva retail media", a3_p: "Sponsorizza categorie chiave e proteggi i bestseller in search.",
+          media_title: "Retail Media Packages", media_sub: "Simulatore demo + pacchetti consigliati",
+          media_sim_t: "Simulatore ROAS (demo)", media_sim_p: "Muovi lo slider per stimare vendite generate (esempio).",
+          budget: "Budget", est_sales: "Vendite stimate",
+          media_pack_t: "Pacchetti", media_pack_p: "Strutturati per catalog boost, difesa keyword e lancio novità.",
+          m1_t: "Catalog Boost", m1_p: "Sponsored category + placement su top list.",
+          m2_t: "Search Defense", m2_p: "Proteggi keyword brand e bestseller in ricerca.",
+          m3_t: "New Drop Launch", m3_p: "Pacchetto completo per nuove referenze + promo.",
+          cta_next_t: "Prossimo step", cta_next_p: "Connetti i dati e trasformiamo questi insight in azioni automatiche.",
+          cta_to_customer: "Vedi come appare lato cliente",
+          foot_left: "Strumenti per supplier", foot_copy: "Demo dashboard — no domain required",
+        },
+        en: {
+          perf_sub: "Performance", nav_kpi: "KPIs", nav_catalog: "Catalog", nav_actions: "Actions", nav_media: "Retail Media",
+          cta_back: "Back to customer page",
+          perf_kicker: "Demo dashboard • ready to connect real data",
+          perf_h1: "Improve catalog. Increase sales. Activate retail media.",
+          perf_lede: "This page shows how BirraIngross can improve performance on SIRVIS: listing quality, availability, pricing and sponsored campaigns.",
+          cta_fix: "See recommended actions", cta_media: "Simulate a media package",
+          kpi_title: "Key KPIs", kpi_sub: "30‑day view (demo)",
+          kpi1_t: "Sales", kpi1_p: "+12% vs previous period",
+          kpi2_t: "Conversion rate", kpi2_p: "Improve with images + attributes",
+          kpi3_t: "Catalog score", kpi3_p: "Goal: 85+ to maximize ranking",
+          cat_title: "Catalog: what to improve", cat_sub: "Priorities that impact search, conversion and reorders",
+          cat_left_t: "Listing quality checklist",
+          cat_left_p: "<ul><li>Consistent images (1:1) • 1200px+</li><li>EAN / GTIN present</li><li>Attributes: size, ABV, allergens, origin</li><li>Titles: brand + style + pack size</li></ul>",
+          cat_right_t: "SKUs to fix (demo)", cat_right_p: "Example list you can turn into a task queue.",
+          act_title: "Recommended actions (next 14 days)", act_sub: "A simple plan to lift ranking and sales",
+          act_impact_1: "High impact", act_impact_2: "Medium impact", act_impact_3: "High impact",
+          a1_t: "Fix top 20 SKUs", a1_p: "Images, titles and complete attributes for most viewed SKUs.",
+          a2_t: "Pricing & availability", a2_p: "Avoid OOS on bestsellers and define smart substitutes.",
+          a3_t: "Activate retail media", a3_p: "Sponsor key categories and defend bestsellers in search.",
+          media_title: "Retail Media Packages", media_sub: "Demo simulator + suggested packages",
+          media_sim_t: "ROAS simulator (demo)", media_sim_p: "Move the slider to estimate generated sales (example).",
+          budget: "Budget", est_sales: "Estimated sales",
+          media_pack_t: "Packages", media_pack_p: "Built for catalog boost, keyword defense and new launches.",
+          m1_t: "Catalog Boost", m1_p: "Sponsored category + top-list placement.",
+          m2_t: "Search Defense", m2_p: "Protect brand keywords and bestsellers in search.",
+          m3_t: "New Drop Launch", m3_p: "Full package for new items + promos.",
+          cta_next_t: "Next step", cta_next_p: "Connect data and turn these insights into automated actions.",
+          cta_to_customer: "See how it looks customer-side",
+          foot_left: "Supplier tools", foot_copy: "Demo dashboard — no domain required",
+        }
+      };
+
+      // ── i18n ──
+      function applyLang(lang) {
+        const d = window.__I18N__[lang] || window.__I18N__.it;
+        document.documentElement.setAttribute('data-lang', lang);
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const k = el.dataset.i18n; if (d[k]) el.textContent = d[k];
+        });
+        document.querySelectorAll('[data-i18n-html]').forEach(el => {
+          const k = el.dataset.i18nHtml; if (d[k]) el.innerHTML = d[k];
+        });
+        document.querySelectorAll('.pill[data-lang]').forEach(b => {
+          b.classList.toggle('is-active', b.dataset.lang === lang);
+        });
+        localStorage.setItem('sirvis_lang', lang);
+      }
+      document.querySelectorAll('.pill[data-lang]').forEach(b => {
+        b.addEventListener('click', () => applyLang(b.dataset.lang));
+      });
+      applyLang(localStorage.getItem('sirvis_lang') || 'it');
+
+      // ── Active nav ──
+      const navLinks = document.querySelectorAll('.navlinks a');
+      const sections = document.querySelectorAll('section[id]');
+      const obs = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+          if (e.isIntersecting) {
+            navLinks.forEach(a => a.classList.toggle('is-active', a.dataset.nav === e.target.id));
+          }
+        });
+      }, { threshold: 0.3 });
+      sections.forEach(s => obs.observe(s));
+
+      // ── ROAS Slider ──
+      const slider = document.getElementById('roiSlider');
+      const spendEl = document.getElementById('roiSpend');
+      const salesEl = document.getElementById('roiSales');
+      const roiOut = document.getElementById('roiOut');
+      function updateRoi() {
+        const spend = parseInt(slider.value);
+        const roas = spend < 1000 ? 3.8 : spend < 2500 ? 4.2 : 4.8;
+        const sales = Math.round(spend * roas / 100) * 100;
+        spendEl.textContent = '€' + spend.toLocaleString('it-IT');
+        salesEl.textContent = '€' + sales.toLocaleString('it-IT');
+        roiOut.textContent = `ROAS stimato: ${roas}×`;
+      }
+      slider.addEventListener('input', updateRoi);
+      updateRoi();
+
+      document.getElementById('year').textContent = String(new Date().getFullYear());
+    </script>
+  </body>
+</html>
